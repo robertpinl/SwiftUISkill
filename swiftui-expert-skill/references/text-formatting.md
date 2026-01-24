@@ -233,12 +233,13 @@ This is a paragraph with **bold** text.
 
 ## Text Measurement
 
-### Measuring Text Width
+### Measuring Text Height
 
 ```swift
+// Wrong (Legacy) - GeometryReader trick
 struct MeasuredText: View {
     let text: String
-    @State private var textWidth: CGFloat = 0
+    @State private var textHeight: CGFloat = 0
     
     var body: some View {
         Text(text)
@@ -246,10 +247,25 @@ struct MeasuredText: View {
                 GeometryReader { geometry in
                     Color.clear
                         .onAppear {
-                            textWidth = geometry.size.width
+                            textWidth = geometry.size.height
                         }
                 }
             )
+    }
+}
+
+// Modern (correct)
+struct MeasuredText: View {
+    let text: String
+    @State private var textHeight: CGFloat = 0
+    
+    var body: some View {
+        Text(text)
+            .onGeometryChange(for: CGFloat.self) { geometry in
+                geometry.size.height
+            } action: { newValue in
+                textHeight = newValue
+            }
     }
 }
 ```
