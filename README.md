@@ -124,6 +124,9 @@ swiftui-expert-skill/
 ```
 <!-- END REFERENCE STRUCTURE -->
 
+## Other skills
+- [Swift Concurrency Expert](https://github.com/AvdLee/Swift-Concurrency-Agent-Skill)
+
 ## Contributing
 
 Contributions are welcome! This repository follows the [Agent Skills open format](https://agentskills.io/home), which has specific structural requirements.
