@@ -152,7 +152,7 @@ struct GoodView: View {
 
 ### $StateObject instantiation in View's initializer
 
-If your $StateObject creation depends on parameters passed in initializer: be aware of redundant allocations and hidden side effects. Kudos to Vincent Pradeilles.
+If your $StateObject creation from wrapper depends on parameters passed in initializer, be aware of redundant allocations and hidden side effects. Kudos to Vincent Pradeilles.
 
 ```swift
 // WRONG - creates new ViewModel instance on every view update
