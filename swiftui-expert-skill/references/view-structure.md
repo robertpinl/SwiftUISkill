@@ -203,22 +203,25 @@ MyContainer {
 ## ZStack vs overlay/background
 
 Use `ZStack` to **compose multiple peer views** that should be layered together.
-Do **not** use `ZStack` to place inner or decorative elements inside a primary view.
-For decoration or attachment to a single view, prefer `overlay` or `background`.
 
-### ZStack usage
+Prefer `overlay` / `background` when you’re **decorating a primary view without changing its measured size**.
+Use `ZStack` (or another container) when the “decoration” **must participate in layout sizing** (reserve space, extend visible/tappable bounds, avoid overlap with neighbors).
+
+### When decoration must NOT affect layout size
 
 ```swift
 // GOOD - for correct usage
-// Multiple peer views composed together
-ZStack(alignment: .bottomLeading) {
-    MapView()
-    LocationPermissionCallout()
-    FloatingControls()
+// Decoration that should not change layout sizing belongs in overlay/background
+Button("Continue") {
+    // action
+}
+.overlay(alignment: .trailing) {
+    Image(systemName: "lock.fill")
+        .padding(.trailing, 8)
 }
 
 // BAD - for wrong one
-// ZStack used only to decorate a primary view
+// Using ZStack when overlay/background is enough and layout sizing should remain anchored to the button
 ZStack {
     Button("Continue") {
         // action
@@ -228,15 +231,44 @@ ZStack {
 }
 
 // GOOD - for correct usage
-// Decoration belongs to the primary view
-Button("Continue") {
-    // action
-}
-.overlay(alignment: .trailing) {
-    Image(systemName: "lock.fill")
-        .padding(.trailing, 8)
+// Badge reserves space / extends bounds, so it must be part of layout sizing.
+// Use a container (ZStack/VStack/HStack) to make sizing explicit.
+ZStack(alignment: .topTrailing) {
+    HStack(spacing: 8) {
+        Image(systemName: "tray")
+        Text("Inbox")
+    }
+    .padding(.trailing, 18) // reserve room so the badge doesn't overlap/clamp neighbors
+
+    Text("3")
+        .font(.caption2)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 2)
+        .background(Capsule().fill(.red))
+        .padding(.top, -6)
+        .padding(.trailing, -6)
 }
 
+// BAD - for wrong one
+// overlay does not contribute to measured size, so the badge may overlap/clamp with neighbors
+HStack {
+    HStack(spacing: 8) {
+        Image(systemName: "tray")
+        Text("Inbox")
+    }
+    .overlay(alignment: .topTrailing) {
+        Text("3")
+            .font(.caption2)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(Capsule().fill(.red))
+            .padding(.top, -6)
+            .padding(.trailing, -6)
+    }
+
+    Spacer()
+    Text("Next")
+}
 ```
 
 ## Summary Checklist
