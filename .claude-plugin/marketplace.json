@@ -44,8 +44,7 @@
       "source": "./",
       "skills": [
         "./swiftui-expert-skill"
-      ],
-      "strict": false
+      ]
     }
   ]
 }
